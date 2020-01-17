@@ -28,7 +28,7 @@ def help(update, context):
 
 def echo(update, context):
     """Echo the user message."""
-    update.message.reply_text(update.message.text)
+    update.message.reply_text(total)
 
 
 def error(update, context):
@@ -63,6 +63,15 @@ def main():
     # SIGTERM or SIGABRT. This should be used most of the time, since
     # start_polling() is non-blocking and will stop the bot gracefully.
     updater.idle()
+    r = requests.get('https://api.github.com/orgs/fedora-infra/repos')
+
+    json_dict = json.loads(r.text)
+    
+    total = 0
+
+    for item in json_dict:
+        total = total + item['forks']
+
 
 if __name__ == '__main__':
     main()
