@@ -14,6 +14,14 @@ logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s
 logger = logging.getLogger(__name__)
 
 
+total = 0
+r = requests.get('https://api.github.com/orgs/fedora-infra/repos')
+
+json_dict = json.loads(r.text)
+
+for item in json_dict:
+    total = total + item['forks']
+
 # Define a few command handlers. These usually take the two arguments update and
 # context. Error handlers also receive the raised TelegramError object in error.
 def start(update, context):
@@ -28,7 +36,7 @@ def help(update, context):
 
 def echo(update, context):
     """Echo the user message."""
-    update.message.reply_text(total)
+    update.message.reply_text('The forks of Fedora Infra are totally ' + str(total) + '.')
 
 
 def error(update, context):
@@ -62,16 +70,6 @@ def main():
     # Run the bot until you press Ctrl-C or the process receives SIGINT,
     # SIGTERM or SIGABRT. This should be used most of the time, since
     # start_polling() is non-blocking and will stop the bot gracefully.
-    updater.idle()
-    r = requests.get('https://api.github.com/orgs/fedora-infra/repos')
-
-    json_dict = json.loads(r.text)
-    
-    total = 0
-
-    for item in json_dict:
-        total = total + item['forks']
-
 
 if __name__ == '__main__':
     main()
